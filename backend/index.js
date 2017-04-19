@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 app.use('/', routes);
 app.use('*', (req, res) => res.status(404).end());
+
 app.use((e, req, res, next) => {
 	log.error('application error', {error: e.message, stack: e.stack});
 	res.status(500).end();

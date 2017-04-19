@@ -1,5 +1,7 @@
 const Promise = require('bluebird');
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
+const { resolve } = require('path');
 const { getRepoCommits } = require('./github');
 const { getGif } = require('./giphy');
 
@@ -13,8 +15,9 @@ const fetchCommits = async function (link) {
 	}
 };
 
+router.use(express.static(__dirname + '/../frontend/dist/'));
 router.get('/', (req, res) => {
-	res.send('use api routes');
+	res.sendFile(resolve(__dirname + '/../frontend/dist/index.html'));
 });
 
 router.get('/api/repo', (req, res, next) => {
