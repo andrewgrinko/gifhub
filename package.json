@@ -18,7 +18,9 @@
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
+    "express-request-log": "^1.0.0",
     "github": "^9.2.0",
+    "helmet": "^3.5.0",
     "moment": "^2.18.1",
     "winston": "^2.3.1"
   },

@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 	res.send('use api routes');
 });
 
-router.get('/api/repo', (req, res) => {
+router.get('/api/repo', (req, res, next) => {
 	let link = req.query.url;
 	if (!link) {
 		res.status(400).send('No repo link provided!');
@@ -34,7 +34,7 @@ router.get('/api/repo', (req, res) => {
 			});
 		})
 		.then(gifUrls => res.send(gifUrls))
-		.catch(e => res.send(e));
+		.catch(next);
 });
 
 module.exports = router;
