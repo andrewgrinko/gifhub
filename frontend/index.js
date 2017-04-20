@@ -1,21 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader';
-import App from './app';
+import React from "react";
+import ReactDOM from "react-dom";
+import { AppContainer } from "react-hot-loader";
 
-const render = (Component) => {
-	ReactDOM.render(
-		<AppContainer>
-			<Component/>
-		</AppContainer>,
-		document.getElementById('root')
-	);
-};
+import Main from "./main";
 
-render(App);
+const rootElement = document.getElementById("root");
 
-if (module.hot) {
-	module.hot.accept('./app', () => {
-		render(App);
-	});
+ReactDOM.render(<Main />, rootElement);
+
+if (module.hot && process.env.NODE_ENV === "development") {
+  module.hot.accept("./main", () => {
+    ReactDOM.render(
+      <AppContainer>
+        <Main />
+      </AppContainer>,
+      rootElement
+    );
+  });
 }
