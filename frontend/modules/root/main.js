@@ -6,6 +6,8 @@ import { bindActionCreators } from "redux";
 
 import isNull from "lodash/isNull";
 
+import Header from "../header/main";
+
 const Main = props => {
   switch (true) {
     case uninitialized(props):
@@ -38,9 +40,7 @@ const Render = props => {
   return (
     <div className="layout">
       <div className="layout-content">
-        <h1>{props.data}</h1>
-        <p>Test</p>
-        <span>Cool.</span>
+        <Header />
         {props.children}
       </div>
     </div>

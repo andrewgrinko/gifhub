@@ -1,6 +1,12 @@
 const { resolve } = require("path");
 const webpack = require("webpack");
 const isProduction = process.env.NODE_ENV === "production";
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+const extractLess = new ExtractTextPlugin({
+  filename: "[name].[contenthash].css",
+  disable: !isProduction
+});
 
 module.exports = {
   context: resolve(__dirname, "frontend"),
@@ -39,8 +45,27 @@ module.exports = {
         exclude: /node_modules/
       },
       {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
+        test: /\.(css|less)$/,
+        use: extractLess.extract({
+          use: [
+            {
+              loader: "css-loader"
+            },
+            {
+              loader: "less-loader"
+            }
+          ],
+          // use style-loader in development
+          fallback: "style-loader"
+        })
+      },
+      {
+        test: /\.(eot|ttf|woff)$/,
+        loader: "url-loader",
+        query: {
+          name: "fonts/[name].[ext]",
+          limit: "8192"
+        }
       }
     ]
   },
@@ -55,6 +80,8 @@ module.exports = {
         }
       })
     );
+
+    plugins.push(extractLess);
 
     if (!isProduction) {
       plugins.push(new webpack.HotModuleReplacementPlugin());

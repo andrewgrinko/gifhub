@@ -1,3 +1,5 @@
+import "normalize.css";
+import "./less/config.less";
 import React from "react";
 import { Provider } from "react-redux";
 import { Router, browserHistory } from "react-router";
