@@ -25,7 +25,7 @@ export default class Header extends React.Component {
       clearInterval(this.colorIntervalId);
     }
     this.setState({
-      colors: this.state.colors.concat(randomColor({ hue: "pink" }))
+      colors: this.state.colors.concat(randomColor({ luminosity: "light" }))
     });
   }
 
