@@ -7,6 +7,7 @@ import { bindActionCreators } from "redux";
 import isNull from "lodash/isNull";
 
 import Header from "../header/main";
+import List from "../main/main";
 
 const Main = props => {
   switch (true) {
@@ -41,6 +42,9 @@ const Render = props => {
     <div className="layout">
       <div className="layout-content">
         <Header />
+        <div className="main-container">
+          <List />
+        </div>
         {props.children}
       </div>
     </div>
