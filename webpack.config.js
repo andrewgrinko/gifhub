@@ -13,7 +13,7 @@ module.exports = {
 
   entry: (function() {
     let entryPoints = [];
-		entryPoints.push('babel-polyfill');
+    entryPoints.push("babel-polyfill");
     if (!isProduction) entryPoints.push("react-hot-loader/patch");
     entryPoints.push("./index.js");
     return entryPoints;
