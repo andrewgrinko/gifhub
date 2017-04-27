@@ -4,17 +4,17 @@ import { AppContainer } from "react-hot-loader";
 
 import Main from "./main";
 
-const rootElement = document.getElementById("root");
+const render = Component => {
+  ReactDOM.render(
+    <AppContainer>
+      <Component />
+    </AppContainer>,
+    document.getElementById('root')
+  )
+}
 
-ReactDOM.render(<Main />, rootElement);
+render(Main)
 
-if (module.hot && process.env.NODE_ENV === "development") {
-  module.hot.accept("./main", () => {
-    ReactDOM.render(
-      <AppContainer>
-        <Main />
-      </AppContainer>,
-      rootElement
-    );
-  });
+if (module.hot) {
+  module.hot.accept('./main', () => { render(Main) })
 }
