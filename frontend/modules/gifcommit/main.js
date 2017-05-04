@@ -6,7 +6,12 @@ const Gifcommit = props => {
   return (
     <div className="gifcommit">
       <img src={props.url} />
-      <p className="message">{props.message}</p>
+      <div className="commit-message">
+        <label>
+          Commit message:
+        </label>
+        <p className="message">{props.message}</p>
+      </div>
     </div>
   );
 };
