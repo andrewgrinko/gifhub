@@ -4,7 +4,7 @@ import axios from "axios";
 import PropTypes from "prop-types";
 
 import Search from "../shared/search";
-import Gifcommit from "../gifcommit/main";
+import GifcommitsList from "../gifcommits/list/main";
 
 export default class Main extends React.Component {
   constructor(props) {
@@ -12,12 +12,14 @@ export default class Main extends React.Component {
     this.state = {
       query: "",
       gifs: [],
-			repo: null,
+      repo: null,
       hasNextPage: false,
-      link: null
+      link: null,
+      isLoading: false
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.loadNextPage = this.loadNextPage.bind(this);
   }
 
   onChange(e) {
@@ -26,22 +28,35 @@ export default class Main extends React.Component {
 
   onSubmit(e) {
     e.preventDefault();
+    this.setState({ isLoading: true });
     const url = this.state.query;
     if (url) {
       fetchGifs(url).then(result => {
         let { repo, gifs, hasNextPage, link } = result.data;
-        this.setState({ repo, gifs, hasNextPage, link });
+        this.setState({ repo, gifs, hasNextPage: !!hasNextPage, link, isLoading: false });
+      });
+    }
+  }
+
+  loadNextPage() {
+    const link = this.state.link;
+    if (link) {
+      this.setState({ isLoading: true });
+      fetchNextPage(link).then(result => {
+        let { gifs, hasNextPage, link } = result.data;
+        this.setState(state => {
+          return {
+            gifs: state.gifs.concat(gifs),
+            hasNextPage: !!hasNextPage,
+            link,
+            isLoading: false
+          };
+        });
       });
     }
   }
 
   render() {
-    const gifcommits =
-      this.state.gifs.length > 0 &&
-      this.state.gifs.map((gifObj, i) => {
-        return <Gifcommit key={i} data={gifObj} />;
-      });
-
     return (
       <div className="main-list">
         <SearchBox
@@ -49,12 +64,21 @@ export default class Main extends React.Component {
           onSubmit={this.onSubmit}
           onChange={this.onChange}
         />
-			{this.state.repo ? <div className="repo-name">
-				<a href={this.state.repo.url} target="_blank">{this.state.repo.name}</a>
-			</div> : null}
-        <div className="gifcommits">
-          {gifcommits}
-        </div>
+        {this.state.repo
+          ? <div className="repo-name">
+              <a href={this.state.repo.url} target="_blank">
+                {this.state.repo.name}
+              </a>
+            </div>
+          : null}
+        {this.state.gifs.length > 0
+          ? <GifcommitsList
+              hasNextPage={this.state.hasNextPage}
+              list={this.state.gifs}
+              isNextPageLoading={this.state.isLoading}
+              loadNextPage={this.loadNextPage}
+            />
+          : null}
       </div>
     );
   }
@@ -83,5 +107,10 @@ SearchBox.propTypes = {
 
 const fetchGifs = async function(url) {
   const result = await axios.get("/api/repo", { params: { url } });
+  return result;
+};
+
+const fetchNextPage = async function(link) {
+  const result = await axios.put("/api/repo", { link });
   return result;
 };

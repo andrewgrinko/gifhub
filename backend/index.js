@@ -6,7 +6,7 @@ const { resolve } = require("path");
 
 const log = require("./providers/log");
 const routes = require("./routes");
-const detectMobile = require('./detect-mobile');
+const detectMobile = require("./detect-mobile");
 
 const port = process.env.port || 3000;
 const app = express();

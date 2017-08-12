@@ -1,7 +1,7 @@
 const axios = require("axios");
 const key = "dc6zaTOxFJmzC";
 
-module.exports.getGif = async function(message, is_mobile = false) {
+module.exports.getGif = async function(message, is_mobile) {
   const query = message.split(" ").join("+");
   const params = {
     s: query,
@@ -24,7 +24,9 @@ function parseGiphyResponse(response, is_mobile) {
     return;
   }
   const responseData = response.data.data;
-  const url = is_mobile ? responseData.images.fixed_width_downsampled.url : responseData.images.downsized.url;
+  const url = is_mobile
+    ? responseData.images.fixed_width_downsampled.url
+    : responseData.images.downsized.url;
 
   return { url };
 }
