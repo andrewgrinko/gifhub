@@ -6,6 +6,7 @@ const { resolve } = require("path");
 
 const log = require("./providers/log");
 const routes = require("./routes");
+const detectMobile = require('./detect-mobile');
 
 const port = process.env.port || 3000;
 const app = express();
@@ -13,6 +14,7 @@ const app = express();
 app.use(requestLog(log, { headers: false, request: false, response: false }));
 app.use(helmet());
 app.use(bodyParser.json());
+app.use(detectMobile);
 
 app.use("/", routes);
 app.use(express.static(__dirname + "/../frontend/dist/"));

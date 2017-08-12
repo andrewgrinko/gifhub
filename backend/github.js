@@ -15,6 +15,10 @@ const service = {
     const link = result.meta && result.meta.link;
 
     return {
+			repo: {
+				name: repo,
+				url: `https://github.com/${owner}/${repo}`
+			},
       commits: result.data,
       hasNextPage: github.hasNextPage(link),
       link

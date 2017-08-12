@@ -6,8 +6,12 @@ const { getRepoCommits, getNextPage } = require("./github");
 const { getGif } = require("./giphy");
 
 const fetchCommits = memoizee(link => getRepoCommits(link), {
-  maxAge: 1000 * 60 * 60 * 24
-}); // 1 day
+  maxAge: 1000 * 60 * 15
+}); // 15 minutes
+
+const fetchGif = memoizee((message, is_mobile) => getGif(message, is_mobile), {
+	maxAge: 1000 * 60 * 15
+});
 
 router.get("/api/repo", (req, res, next) => {
   let link = req.query.url;
@@ -15,18 +19,18 @@ router.get("/api/repo", (req, res, next) => {
     res.status(400).send("No repo link provided!");
   }
 
-  fetchCommits(link).then(mapCommits).then(gifs => res.send(gifs)).catch(next);
+  fetchCommits(link).then(commits => mapCommits(commits, req.is_mobile)).then(gifs => res.send(gifs)).catch(next);
 });
 
 router.put("/api/repo", (req, res, next) => {
   let link = req.body.link;
-  getNextPage(link).then(mapCommits).then(gifs => res.send(gifs)).catch(next);
+  getNextPage(link).then(commits => mapCommits(commits, req.is_mobile)).then(gifs => res.send(gifs)).catch(next);
 });
 
-const mapCommits = data => {
-  let { commits, hasNextPage, link } = data;
+const mapCommits = (data, is_mobile) => {
+  let { repo, commits, hasNextPage, link } = data;
   return Promise.map(commits, async commitObject => {
-    let gif = await getGif(commitObject.commit.message);
+    let gif = await fetchGif(commitObject.commit.message, is_mobile);
     let { author } = commitObject;
     return {
       url: gif.url,
@@ -40,6 +44,7 @@ const mapCommits = data => {
     };
   }).then(gifs => {
     return {
+			repo,
       gifs,
       hasNextPage,
       link

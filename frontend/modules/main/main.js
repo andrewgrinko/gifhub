@@ -12,6 +12,7 @@ export default class Main extends React.Component {
     this.state = {
       query: "",
       gifs: [],
+			repo: null,
       hasNextPage: false,
       link: null
     };
@@ -28,8 +29,8 @@ export default class Main extends React.Component {
     const url = this.state.query;
     if (url) {
       fetchGifs(url).then(result => {
-        let { gifs, hasNextPage, link } = result.data;
-        this.setState({ gifs, hasNextPage, link });
+        let { repo, gifs, hasNextPage, link } = result.data;
+        this.setState({ repo, gifs, hasNextPage, link });
       });
     }
   }
@@ -48,6 +49,9 @@ export default class Main extends React.Component {
           onSubmit={this.onSubmit}
           onChange={this.onChange}
         />
+			{this.state.repo ? <div className="repo-name">
+				<a href={this.state.repo.url} target="_blank">{this.state.repo.name}</a>
+			</div> : null}
         <div className="gifcommits">
           {gifcommits}
         </div>
