@@ -5,20 +5,21 @@ import PropTypes from "prop-types";
 const Gifcommit = props => {
   return (
     <div className="gifcommit">
-      <img src={props.url} />
+      <img src={props.data.url} />
+      <div className="author">
+        <a href={props.data.author.url} target="_blank">
+          {props.data.author.name}
+        </a>
+      </div>
       <div className="commit-message">
-        <label>
-          Commit message:
-        </label>
-        <p className="message">{props.message}</p>
+        <p className="message">{props.data.message}</p>
       </div>
     </div>
   );
 };
 
 Gifcommit.propTypes = {
-  url: PropTypes.string,
-  message: PropTypes.string
+  data: PropTypes.object
 };
 
 export default Gifcommit;

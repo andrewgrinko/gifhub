@@ -35,7 +35,7 @@ export default class Main extends React.Component {
     const gifcommits =
       this.state.gifs.length > 0 &&
       this.state.gifs.map((gifObj, i) => {
-        return <Gifcommit key={i} url={gifObj.url} message={gifObj.message} />;
+        return <Gifcommit key={i} data={gifObj} />;
       });
 
     return (
@@ -61,7 +61,7 @@ const SearchBox = props => {
           value={props.value}
           onChange={props.onChange}
           labelText="Paste a URL to a public Github repo or commit"
-          placeholder="github.com/..."
+          placeholder="https://github.com/..."
         />
       </form>
     </div>
