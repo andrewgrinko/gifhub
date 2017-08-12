@@ -11,7 +11,9 @@ export default class Main extends React.Component {
     super(props);
     this.state = {
       query: "",
-      gifs: []
+      gifs: [],
+      hasNextPage: false,
+      link: null
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -26,7 +28,8 @@ export default class Main extends React.Component {
     const url = this.state.query;
     if (url) {
       fetchGifs(url).then(result => {
-        this.setState({ gifs: result.data });
+        let { gifs, hasNextPage, link } = result.data;
+        this.setState({ gifs, hasNextPage, link });
       });
     }
   }
