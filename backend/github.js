@@ -1,8 +1,21 @@
 const url = require("url");
 const githubAPI = require("github");
 const Promise = require("bluebird");
+const GH_CLIENT_ID = process.env.GH_CLIENT_ID;
+const GH_CLIENT_SECRET = process.env.GH_CLIENT_SECRET;
 
-const github = new githubAPI({ Promise });
+const github = new githubAPI({
+  Promise,
+  headers: {
+    "user-agent": "andrewgrinko-gifcommits"
+  }
+});
+
+github.authenticate({
+  type: "oauth",
+  key: GH_CLIENT_ID,
+  secret: GH_CLIENT_SECRET
+});
 
 const service = {
   getRepoCommits: async repoUrl => {

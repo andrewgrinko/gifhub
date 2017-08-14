@@ -9,9 +9,12 @@ const fetchCommits = memoizee(link => getRepoCommits(link), {
   maxAge: 1000 * 60 * 15
 }); // 15 minutes
 
-const fetchGif = memoizee((message, is_mobile) => getGif(message, is_mobile), {
-  maxAge: 1000 * 60 * 15
-});
+const fetchGif = memoizee(
+  (message, repo, is_mobile) => getGif(message, is_mobile),
+  {
+    maxAge: 1000 * 60 * 15
+  }
+);
 
 router.get("/api/repo", (req, res, next) => {
   let link = req.query.url;
@@ -36,7 +39,7 @@ router.put("/api/repo", (req, res, next) => {
 const mapCommits = (data, is_mobile = false) => {
   let { repo, commits, hasNextPage, link } = data;
   return Promise.map(commits, async commitObject => {
-    let gif = await fetchGif(commitObject.commit.message, is_mobile);
+    let gif = await fetchGif(commitObject.commit.message, repo, is_mobile);
     let { author } = commitObject;
     return {
       url: gif.url,
@@ -44,9 +47,7 @@ const mapCommits = (data, is_mobile = false) => {
       author: {
         name: author && author.login,
         url: author && author.html_url
-      },
-      hasNextPage: commitObject.hasNextPage,
-      link: commitObject.link
+      }
     };
   }).then(gifs => {
     return {

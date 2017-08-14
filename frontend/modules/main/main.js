@@ -33,7 +33,13 @@ export default class Main extends React.Component {
     if (url) {
       fetchGifs(url).then(result => {
         let { repo, gifs, hasNextPage, link } = result.data;
-        this.setState({ repo, gifs, hasNextPage: !!hasNextPage, link, isLoading: false });
+        this.setState({
+          repo,
+          gifs,
+          hasNextPage: !!hasNextPage,
+          link,
+          isLoading: false
+        });
       });
     }
   }

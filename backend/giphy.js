@@ -1,5 +1,5 @@
 const axios = require("axios");
-const key = "dc6zaTOxFJmzC";
+const key = process.env.GIPHY_KEY;
 
 module.exports.getGif = async function(message, is_mobile) {
   const query = message.split(" ").join("+");
@@ -24,9 +24,9 @@ function parseGiphyResponse(response, is_mobile) {
     return;
   }
   const responseData = response.data.data;
-  const url = is_mobile
-    ? responseData.images.fixed_width_downsampled.url
-    : responseData.images.downsized.url;
+  const gif = is_mobile
+    ? responseData.images.fixed_width_downsampled
+    : responseData.images.downsized;
 
-  return { url };
+  return { url: gif.url };
 }
