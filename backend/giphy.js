@@ -6,7 +6,7 @@ module.exports.getGif = async function(message, is_mobile) {
   const params = {
     s: query,
     api_key: key,
-		rating: 'g'
+    rating: "g"
   };
 
   const response = await axios.get("http://api.giphy.com/v1/gifs/translate", {
