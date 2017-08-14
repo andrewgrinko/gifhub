@@ -1,14 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import {
-  AutoSizer,
-  InfiniteLoader,
-  List,
-  WindowScroller,
-  CellMeasurer,
-  CellMeasurerCache
-} from "react-virtualized";
+import AutoSizer from 'react-virtualized/dist/commonjs/AutoSizer'
+import List from 'react-virtualized/dist/commonjs/List'
+import InfiniteLoader from 'react-virtualized/dist/commonjs/InfiniteLoader'
+import WindowScroller from 'react-virtualized/dist/commonjs/WindowScroller'
+import CellMeasurer from 'react-virtualized/dist/commonjs/CellMeasurer'
+import CellMeasurerCache from 'react-virtualized/dist/commonjs/CellMeasurerCache'
 
 import Gifcommit from "../item/main";
 
