@@ -9,17 +9,25 @@ export default class Root extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      query: (this.props.location.query && this.props.location.query.search) ||
+      query: (this.props.location.query && this.props.location.query.repo) ||
+        (this.props.location.query && this.props.location.query.commit) ||
         "",
       gifs: [],
       repo: null,
       hasNextPage: false,
       link: null,
-      isLoading: false
+      isLoading: false,
+			error: false
     };
     this.searchOnSubmit = this.searchOnSubmit.bind(this);
     this.searchOnChange = this.searchOnChange.bind(this);
     this.loadNextPage = this.loadNextPage.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.state.query.length) {
+      this.searchOnSubmit();
+    }
   }
 
   searchOnChange(e) {
@@ -27,7 +35,7 @@ export default class Root extends React.Component {
   }
 
   searchOnSubmit(e) {
-    e.preventDefault();
+    e && e.preventDefault();
     this.setState({ isLoading: true });
     const url = this.state.query;
     if (url) {
@@ -41,7 +49,9 @@ export default class Root extends React.Component {
           isLoading: false
         });
       });
-    }
+    } else {
+			this.setState({ isLoading: false, error: true });
+		}
   }
 
   loadNextPage() {

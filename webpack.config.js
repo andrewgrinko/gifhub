@@ -67,7 +67,15 @@ module.exports = {
           name: "fonts/[name].[ext]",
           limit: "8192"
         }
-      }
+      },
+			{
+				test: /\.(svg)$/,
+				loader: "url-loader",
+				query: {
+					name: "images/[name].[ext]",
+					limit: "8192"
+				}
+			}
     ]
   },
 
