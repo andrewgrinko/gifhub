@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import Search from "../shared/search";
 import GifcommitsList from "../gifcommits/list/main";
 
-import loadingSVG from '../../assets/img/loading.svg';
+import loadingSVG from "../../assets/img/loading.svg";
 
 const Main = props => (
   <div className="main-list">
@@ -29,7 +29,9 @@ const Main = props => (
           loadNextPage={props.loadNextPage}
         />
       : null}
-		{props.isLoading ? <img className="loading-icon" src={loadingSVG} alt="Loading icon"></img> : null}
+    {props.isLoading
+      ? <img className="loading-icon" src={loadingSVG} alt="Loading icon" />
+      : null}
   </div>
 );
 

@@ -17,7 +17,7 @@ export default class Root extends React.Component {
       hasNextPage: false,
       link: null,
       isLoading: false,
-			error: false
+      error: false
     };
     this.searchOnSubmit = this.searchOnSubmit.bind(this);
     this.searchOnChange = this.searchOnChange.bind(this);
@@ -50,8 +50,8 @@ export default class Root extends React.Component {
         });
       });
     } else {
-			this.setState({ isLoading: false, error: true });
-		}
+      this.setState({ isLoading: false, error: true });
+    }
   }
 
   loadNextPage() {
