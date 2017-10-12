@@ -6,13 +6,13 @@ const { getRepoCommits, getNextPage } = require("./github");
 const { getGif } = require("./giphy");
 
 const fetchCommits = memoizee(link => getRepoCommits(link), {
-  maxAge: 1000 * 60 * 15
-}); // 15 minutes
+  maxAge: 1000 * 60 * 60
+}); // 1 hour
 
 const fetchGif = memoizee(
   (message, repo, is_mobile) => getGif(message, is_mobile),
   {
-    maxAge: 1000 * 60 * 15
+    maxAge: 1000 * 60 * 60
   }
 );
 

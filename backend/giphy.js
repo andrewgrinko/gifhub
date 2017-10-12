@@ -1,8 +1,22 @@
+const randomWords = require("random-words");
 const axios = require("axios");
 const key = process.env.GIPHY_KEY;
 
+// generate same/bad results from giphy
+const badKeywords = [
+  "yarn",
+  "changelog",
+  "link",
+  "links",
+  "publish",
+  "style tweak",
+  "script",
+  "install",
+  "test"
+];
+
 module.exports.getGif = async function(message, is_mobile) {
-  const query = message.split(" ").join("+"); // todo replace this with below transform func
+  const query = transformCommitMessage(message);
   const params = {
     s: query,
     api_key: key,
@@ -32,16 +46,26 @@ function parseGiphyResponse(response, is_mobile) {
   return { url: gif.url };
 }
 
-/* eslint-disable */ // is not happy because func is not used
 function transformCommitMessage(message) {
+  let withoutBadKeywords = message;
+
+  badKeywords.forEach(keyword => {
+    let badIndex = withoutBadKeywords.indexOf(keyword);
+    if (badIndex !== -1) {
+      withoutBadKeywords =
+        withoutBadKeywords.slice(0, badIndex) +
+        withoutBadKeywords.slice(badIndex + keyword.length);
+    }
+  });
+
   let split = message.split(" ");
+
   if (split.length < 5) {
-    return split.join("+");
+    split.join(randomWords(5));
   }
 
   let transformed = [];
   let withoutDuplicates = [];
-  let wordCount = {};
 
   transformed = split.map(s => s.replace(/[^\w\s]/gi, ""));
   transformed = transformed.map(s => s.replace("\n", ""));
@@ -51,11 +75,8 @@ function transformCommitMessage(message) {
   transformed.forEach(s => {
     if (withoutDuplicates.indexOf(s) === -1) {
       withoutDuplicates.push(s);
-      wordCount[s] = 1;
-    } else {
-      wordCount[s]++;
     }
   });
 
-  // todo get keys with maximum count values and make a new message with max 3-4 words
+  return withoutDuplicates.slice(0, 5).join("+");
 }

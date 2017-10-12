@@ -30,6 +30,7 @@
     "lodash": "^4.17.4",
     "memoizee": "^0.4.5",
     "moment": "^2.18.1",
+    "random-words": "0.0.1",
     "react-virtualized": "^9.9.0",
     "winston": "^2.3.1"
   },
