@@ -6,6 +6,7 @@ import Search from "../shared/search";
 import GifcommitsList from "../gifcommits/list/main";
 import ScrollButton from "../scroll-button/main";
 import loadingSVG from "../../assets/img/loading.svg";
+import giphyMark from "../../assets/img/giphy-mark.png";
 
 const Main = props => (
   <div className="main-list">
@@ -14,7 +15,7 @@ const Main = props => (
       onSubmit={props.onSubmit}
       onChange={props.onChange}
     />
-    {props.repo
+    {props.repo && !props.error
       ? <div className="repo-name">
           <a href={props.repo.url} target="_blank">
             {props.repo.name}
@@ -29,10 +30,11 @@ const Main = props => (
           loadNextPage={props.loadNextPage}
         />
       : null}
-    {props.isLoading
+    {props.isLoading && !props.error
       ? <img className="loading-icon" src={loadingSVG} alt="Loading icon" />
       : null}
     {props.error && <div className="error-msg">{props.errorMessage}</div>}
+    <img src={giphyMark} className="giphy-mark" />
     <ScrollButton />
   </div>
 );

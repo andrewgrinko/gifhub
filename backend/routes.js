@@ -30,7 +30,10 @@ router.get("/api/repo", (req, res, next) => {
     .then(commits => mapCommits(commits, req.is_mobile))
     .then(gifs => res.send(gifs))
     .catch(e => {
-      if (e.message === `Didn't understand that link, sorry!`) {
+      if (
+        e.message === `Didn't understand that link, sorry!` ||
+        e.message === `I can't do anything about private repos yet, sorry!`
+      ) {
         return res.status(400).send(e.message);
       }
       return next(e);

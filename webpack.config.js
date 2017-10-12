@@ -69,7 +69,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(svg)$/,
+        test: /\.(svg|png)$/,
         loader: "url-loader",
         query: {
           name: "images/[name].[ext]",

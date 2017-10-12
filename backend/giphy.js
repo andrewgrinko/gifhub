@@ -14,7 +14,10 @@ const badKeywords = [
   "install",
   "test",
   "update",
-  "readme.md"
+  "readme.md",
+  "warning",
+  "record",
+  "text"
 ];
 
 module.exports.getGif = async function(message, is_mobile) {
@@ -25,9 +28,16 @@ module.exports.getGif = async function(message, is_mobile) {
     rating: "g"
   };
 
-  const response = await axios.get("http://api.giphy.com/v1/gifs/translate", {
-    params
-  });
+  let response;
+
+  try {
+    response = await axios.get("http://api.giphy.com/v1/gifs/translate", {
+      params
+    });
+  } catch (e) {
+    throw new Error(e.message);
+  }
+
   const parsedGif = parseGiphyResponse(response, is_mobile);
 
   return parsedGif

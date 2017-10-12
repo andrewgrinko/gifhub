@@ -33,9 +33,18 @@ const service = {
       throw new Error(`Didn't understand that link, sorry!`);
     }
 
-    const result = isSingleCommit
-      ? await github.repos.getCommit({ owner, repo, sha })
-      : await github.repos.getCommits({ owner, repo });
+    let result;
+
+    try {
+      result = isSingleCommit
+        ? await github.repos.getCommit({ owner, repo, sha })
+        : await github.repos.getCommits({ owner, repo });
+    } catch (e) {
+      if (e.code === 404) {
+        throw new Error(`I can't do anything about private repos yet, sorry!`);
+      }
+      throw new Error(e.message);
+    }
 
     const link = result.meta && result.meta.link;
 
