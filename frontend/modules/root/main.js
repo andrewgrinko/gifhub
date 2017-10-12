@@ -7,20 +7,24 @@ import List from "../main/main";
 
 const defaultErrorMsg = `Something went horribly wrong and I don't know what it was ʕ•ᴥ•ʔ`;
 
+const initialState = {
+  query: "",
+  gifs: [],
+  repo: null,
+  hasNextPage: false,
+  link: null,
+  isLoading: false,
+  error: false,
+  errorMessage: defaultErrorMsg
+};
+
 export default class Root extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       query: (this.props.location.query && this.props.location.query.repo) ||
-        (this.props.location.query && this.props.location.query.commit) ||
-        "",
-      gifs: [],
-      repo: null,
-      hasNextPage: false,
-      link: null,
-      isLoading: false,
-      error: false,
-      errorMessage: defaultErrorMsg
+        (this.props.location.query && this.props.location.query.commit),
+      ...initialState
     };
     this.searchOnSubmit = this.searchOnSubmit.bind(this);
     this.searchOnChange = this.searchOnChange.bind(this);
@@ -62,6 +66,8 @@ export default class Root extends React.Component {
             errorMessage: e.message
           });
         });
+    } else {
+      this.setState({ ...initialState });
     }
   }
 
