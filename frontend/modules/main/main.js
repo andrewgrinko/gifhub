@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import Search from "../shared/search";
 import GifcommitsList from "../gifcommits/list/main";
-
+import ScrollButton from "../scroll-button/main";
 import loadingSVG from "../../assets/img/loading.svg";
 
 const Main = props => (
@@ -33,6 +33,7 @@ const Main = props => (
       ? <img className="loading-icon" src={loadingSVG} alt="Loading icon" />
       : null}
     {props.error && <div className="error-msg">{props.errorMessage}</div>}
+    <ScrollButton />
   </div>
 );
 
