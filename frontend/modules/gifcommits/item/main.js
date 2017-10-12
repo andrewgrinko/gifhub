@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 const Gifcommit = props => {
   return (
+    props.data &&
     <div className="gifcommit" id={`gifcommit_${props.index}`}>
       <img src={props.data.url} onLoad={props.onLoad} />
       <div className="description">

@@ -19,13 +19,22 @@ const fetchGif = memoizee(
 router.get("/api/repo", (req, res, next) => {
   let link = req.query.url;
   if (!link) {
-    res.status(400).send("No repo link provided!");
+    return res.status(400).send("No repo link provided!");
+  }
+
+  if (link.indexOf("github.com/") === -1) {
+    return res.status(400).send("Please provide a valid link.");
   }
 
   fetchCommits(link)
     .then(commits => mapCommits(commits, req.is_mobile))
     .then(gifs => res.send(gifs))
-    .catch(next);
+    .catch(e => {
+      if (e.message === `Didn't understand that link, sorry!`) {
+        return res.status(400).send(e.message);
+      }
+      return next(e);
+    });
 });
 
 router.put("/api/repo", (req, res, next) => {
@@ -41,14 +50,16 @@ const mapCommits = (data, is_mobile = false) => {
   return Promise.map(commits, async commitObject => {
     let gif = await fetchGif(commitObject.commit.message, repo, is_mobile);
     let { author } = commitObject;
-    return {
-      url: gif.url,
-      message: gif.message,
-      author: {
-        name: author && author.login,
-        url: author && author.html_url
-      }
-    };
+    return gif
+      ? {
+          url: gif.url,
+          message: gif.message,
+          author: {
+            name: author && author.login,
+            url: author && author.html_url
+          }
+        }
+      : null;
   }).then(gifs => {
     return {
       repo,

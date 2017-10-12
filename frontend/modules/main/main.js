@@ -21,7 +21,7 @@ const Main = props => (
           </a>
         </div>
       : null}
-    {props.gifs.length > 0
+    {props.gifs.length > 0 && !props.error
       ? <GifcommitsList
           hasNextPage={props.hasNextPage}
           list={props.gifs}
@@ -32,6 +32,7 @@ const Main = props => (
     {props.isLoading
       ? <img className="loading-icon" src={loadingSVG} alt="Loading icon" />
       : null}
+    {props.error && <div className="error-msg">{props.errorMessage}</div>}
   </div>
 );
 
@@ -43,7 +44,9 @@ Main.propTypes = {
   hasNextPage: PropTypes.bool,
   isLoading: PropTypes.bool,
   repo: PropTypes.object,
-  gifs: PropTypes.array
+  gifs: PropTypes.array,
+  error: PropTypes.bool,
+  errorMessage: PropTypes.string
 };
 
 export default Main;

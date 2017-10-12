@@ -12,6 +12,12 @@ const detectMobile = require("./detect-mobile");
 const port = process.env.port || 3000;
 const app = express();
 
+process.on("uncaughtException", function(e) {
+  log.error("fatal", { error: e.message, stack: e.stack }, () =>
+    process.exit(75)
+  );
+});
+
 app.use(requestLog(log, { headers: false, request: false, response: false }));
 app.use(helmet());
 app.use(bodyParser.json());
@@ -24,7 +30,8 @@ app.get("*", (req, res) => {
   res.sendFile(resolve(__dirname + "/../frontend/dist/index.html"));
 });
 
-app.use((e, req, res) => {
+// eslint-disable-next-line
+app.use((e, req, res, next) => {
   log.error("application error", { error: e.message, stack: e.stack });
   res.status(500).end();
 });
@@ -40,11 +47,3 @@ process.on("SIGINT", () => {
     );
   });
 });
-
-function handleUncaughtError(e) {
-  log.error("fatal", { error: e.message, stack: e.stack });
-  process.exit(75);
-}
-
-process.on("uncaughtException", handleUncaughtError);
-process.on("unhandledRejection", handleUncaughtError);

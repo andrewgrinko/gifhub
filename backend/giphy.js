@@ -12,7 +12,9 @@ const badKeywords = [
   "style tweak",
   "script",
   "install",
-  "test"
+  "test",
+  "update",
+  "readme.md"
 ];
 
 module.exports.getGif = async function(message, is_mobile) {
@@ -28,14 +30,16 @@ module.exports.getGif = async function(message, is_mobile) {
   });
   const parsedGif = parseGiphyResponse(response, is_mobile);
 
-  return {
-    url: parsedGif.url,
-    message
-  };
+  return parsedGif
+    ? {
+        url: parsedGif.url,
+        message
+      }
+    : null;
 };
 
 function parseGiphyResponse(response, is_mobile) {
-  if (!response.data || !response.data.data) {
+  if (!response.data || !response.data.data || !response.data.data.images) {
     return;
   }
   const responseData = response.data.data;
@@ -47,18 +51,18 @@ function parseGiphyResponse(response, is_mobile) {
 }
 
 function transformCommitMessage(message) {
-  let withoutBadKeywords = message;
+  let lowerCased = message.toLowerCase();
 
   badKeywords.forEach(keyword => {
-    let badIndex = withoutBadKeywords.indexOf(keyword);
+    let badIndex = lowerCased.indexOf(keyword);
     if (badIndex !== -1) {
-      withoutBadKeywords =
-        withoutBadKeywords.slice(0, badIndex) +
-        withoutBadKeywords.slice(badIndex + keyword.length);
+      lowerCased =
+        lowerCased.slice(0, badIndex) +
+        lowerCased.slice(badIndex + keyword.length);
     }
   });
 
-  let split = message.split(" ");
+  let split = lowerCased.split(" ");
 
   if (split.length < 5) {
     split.join(randomWords(5));

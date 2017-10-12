@@ -5,6 +5,8 @@ import axios from "axios";
 import Header from "../header/main";
 import List from "../main/main";
 
+const defaultErrorMsg = `Something went horribly wrong and I don't know what it was ʕ•ᴥ•ʔ`;
+
 export default class Root extends React.Component {
   constructor(props) {
     super(props);
@@ -17,7 +19,8 @@ export default class Root extends React.Component {
       hasNextPage: false,
       link: null,
       isLoading: false,
-      error: false
+      error: false,
+      errorMessage: defaultErrorMsg
     };
     this.searchOnSubmit = this.searchOnSubmit.bind(this);
     this.searchOnChange = this.searchOnChange.bind(this);
@@ -36,21 +39,29 @@ export default class Root extends React.Component {
 
   searchOnSubmit(e) {
     e && e.preventDefault();
-    this.setState({ isLoading: true });
     const url = this.state.query;
     if (url) {
-      fetchGifs(url).then(result => {
-        let { repo, gifs, hasNextPage, link } = result.data;
-        this.setState({
-          repo,
-          gifs,
-          hasNextPage: !!hasNextPage,
-          link,
-          isLoading: false
+      this.setState({ isLoading: true, error: false });
+      fetchGifs(url)
+        .then(result => {
+          let { repo, gifs, hasNextPage, link } = result.data;
+          this.setState({
+            repo,
+            gifs,
+            hasNextPage: !!hasNextPage,
+            link,
+            isLoading: false,
+            error: false,
+            errorMessage: defaultErrorMsg
+          });
+        })
+        .catch(e => {
+          this.setState({
+            isLoading: false,
+            error: true,
+            errorMessage: e.message
+          });
         });
-      });
-    } else {
-      this.setState({ isLoading: false, error: true });
     }
   }
 
@@ -58,17 +69,26 @@ export default class Root extends React.Component {
     const link = this.state.link;
     if (link) {
       this.setState({ isLoading: true });
-      fetchNextPage(link).then(result => {
-        let { gifs, hasNextPage, link } = result.data;
-        this.setState(state => {
-          return {
-            gifs: state.gifs.concat(gifs),
-            hasNextPage: !!hasNextPage,
-            link,
-            isLoading: false
-          };
+      fetchNextPage(link)
+        .then(result => {
+          let { gifs, hasNextPage, link } = result.data;
+          this.setState(state => {
+            return {
+              gifs: state.gifs.concat(gifs),
+              hasNextPage: !!hasNextPage,
+              link,
+              isLoading: false,
+              error: false
+            };
+          });
+        })
+        .catch(e => {
+          this.setState({
+            isLoading: false,
+            error: true,
+            errorMessage: e.message
+          });
         });
-      });
     }
   }
 
@@ -98,11 +118,21 @@ Root.propTypes = {
 };
 
 const fetchGifs = async function(url) {
-  const result = await axios.get("/api/repo", { params: { url } });
+  let result;
+  try {
+    result = await axios.get("/api/repo", { params: { url } });
+  } catch (e) {
+    throw new Error(e.response.data);
+  }
   return result;
 };
 
 const fetchNextPage = async function(link) {
-  const result = await axios.put("/api/repo", { link });
+  let result;
+  try {
+    result = await axios.put("/api/repo", { link });
+  } catch (e) {
+    throw new Error(e.response.data);
+  }
   return result;
 };

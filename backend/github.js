@@ -21,9 +21,21 @@ const service = {
   getRepoCommits: async repoUrl => {
     const parsedUrl = url.parse(repoUrl);
     const pathname = parsedUrl.pathname;
-    const [owner, repo] = pathname.split("/").slice(1);
+    let isSingleCommit = false;
 
-    const result = await github.repos.getCommits({ owner, repo });
+    if (pathname.indexOf("commit/") !== -1) {
+      isSingleCommit = true;
+    }
+
+    const [owner, repo, , sha] = pathname.split("/").slice(1);
+
+    if (!owner || !repo || (isSingleCommit && !sha)) {
+      throw new Error(`Didn't understand that link, sorry!`);
+    }
+
+    const result = isSingleCommit
+      ? await github.repos.getCommit({ owner, repo, sha })
+      : await github.repos.getCommits({ owner, repo });
 
     const link = result.meta && result.meta.link;
 
@@ -32,8 +44,8 @@ const service = {
         name: repo,
         url: `https://github.com/${owner}/${repo}`
       },
-      commits: result.data,
-      hasNextPage: github.hasNextPage(link),
+      commits: isSingleCommit ? [result.data] : result.data,
+      hasNextPage: !isSingleCommit && github.hasNextPage(link),
       link
     };
   },
