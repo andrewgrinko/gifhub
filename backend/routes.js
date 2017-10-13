@@ -32,7 +32,9 @@ router.get("/api/repo", (req, res, next) => {
     .catch(e => {
       if (
         e.message === `Didn't understand that link, sorry!` ||
-        e.message === `I can't do anything about private repos yet, sorry!`
+        e.message === `I can't do anything about private repos yet, sorry!` ||
+        e.message ===
+          "Could not reach Giphy API, try refreshing in 5-10 seconds."
       ) {
         return res.status(400).send(e.message);
       }

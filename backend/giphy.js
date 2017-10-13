@@ -15,9 +15,11 @@ const badKeywords = [
   "test",
   "update",
   "readme.md",
+  ".md",
   "warning",
   "record",
-  "text"
+  "text",
+  "remove"
 ];
 
 module.exports.getGif = async function(message, is_mobile) {
@@ -35,6 +37,11 @@ module.exports.getGif = async function(message, is_mobile) {
       params
     });
   } catch (e) {
+    if (e.code === "ENOTFOUND") {
+      throw new Error(
+        "Could not reach Giphy API, try refreshing in 5-10 seconds."
+      );
+    }
     throw new Error(e.message);
   }
 
